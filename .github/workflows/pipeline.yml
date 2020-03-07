@@ -43,7 +43,7 @@ jobs:
           echo "v$(cat VERSION | cut -d'-' -f1)" > VERSION
           export VERSION=$(cat VERSION)
           ./mvnw versions:set -DnewVersion=${VERSION}
-          ./mvnw clean deploy -Dregistry=https://maven.pkg.github.com/Continuous-X -Dtoken=${{ secrets.GITHUB_TOKEN }}
+          ./mvnw clean deploy -s .mvn/settings.xml
       - name: check env
         run: |
           ls -la
