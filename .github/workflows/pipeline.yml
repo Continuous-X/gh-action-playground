@@ -50,11 +50,8 @@ jobs:
           set
       - name: new gh release (master)
         uses: softprops/action-gh-release@v1
-        if: github.ref == 'refs/heads/master'
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: CHANGELOG.md
-          draft: false
-          prerelease: false
-          tag_name: ${{ github.ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
