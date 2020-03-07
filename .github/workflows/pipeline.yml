@@ -1,0 +1,60 @@
+name: Test Pipeline Push
+on:
+  push:
+    branches:
+      - feature/*
+      - fix/*
+      - bugfix/*
+      - dependabot*
+      - master
+jobs:
+  build:
+    name: Test Pipeline Push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up JDK 11
+        uses: actions/setup-@v1
+        with:
+          -version: '11.x'
+      - name: define variable
+        run: |
+          echo '.m2/repository' > MAVEN_REPOSITORY
+          chmod 777 mvnw
+      - name: check env
+        run: |
+          ls -la
+          set
+      - name: Build & Test Groovy (branch)
+        if: github.ref != 'refs/heads/master'
+        run: |
+          export MAVEN_REPOSITORY=$(cat MAVEN_REPOSITORY)
+          ./mvnw clean install
+      - name: Build,Test & Upload Package (master)
+        if: github.ref == 'refs/heads/master'
+        run: |
+          export MAVEN_REPOSITORY=$(cat MAVEN_REPOSITORY)
+          export GITHUB_USERNAME='x-access-token'
+          export GITHUB_PASSWORD=${{ secrets.GITHUB_TOKEN }}
+          #
+          ./mvnw help:evaluate -Dexpression=project.version -Doutput=VERSION
+          ./mvnw help:evaluate -Dexpression=project.artifacId -Doutput=APP_NAME
+          echo "v$(cat VERSION | cut -d'-' -f1)" > VERSION
+          export VERSION=$(cat VERSION)
+          ./mvnw versions:set -DnewVersion=${VERSION}
+          ./mvnw clean deploy
+      - name: check env
+        run: |
+          ls -la
+          set
+      - name: new gh release (master)
+        uses: softprops/action-gh-release@v1
+        if: github.ref == 'refs/heads/master'
+        with:
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: false
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
