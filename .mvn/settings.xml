@@ -44,7 +44,7 @@
                 </repository>
                 <repository>
                     <id>github-cx</id>
-                    <url>https://maven.pkg.github.com/Continuous-X/jenkins-cx/</url>
+                    <url>https://maven.pkg.github.com/Continuous-X/gh-action-playground/</url>
                 </repository>
             </repositories>
         </profile>
