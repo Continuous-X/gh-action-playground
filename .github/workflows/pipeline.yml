@@ -5,7 +5,7 @@ on:
       - feature/*
       - fix/*
       - bugfix/*
-      - dependabot*
+      - dependabot/**
       - master
 jobs:
   build:
@@ -26,18 +26,33 @@ jobs:
         run: |
           ls -la
           set
-      - name: Bump version and push tag
+      - id: tag_bump_version
+        name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.17.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           DEFAULT_BUMP: patch
           DRY_RUN: true
-      - name: check env
+      - name: check before step
         run: |
-          ls -la
-          set
-          echo ${{ env.new_tag }}
+          echo 'output tagging step: '
+          echo ${{ steps.tag_bump_version.outputs.new_tag }}
+      - id: gh_release
+        name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: RELEASE.md
+          draft: false
+          prerelease: false
+          name: ${{ steps.tag_bump_version.outputs.new_tag }}
+          tag_name: ${{ steps.tag_bump_version.outputs.new_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: check gh release output
+        run: |
+          echo 'output gh release step: '
+          echo ${{ steps.tag_bump_version.outputs.url }}
       - name: Build & Test Groovy (branch)
         if: github.ref != 'refs/heads/master'
         run: |
@@ -50,13 +65,5 @@ jobs:
           export GITHUB_USERNAME='x-access-token'
           export GITHUB_PASSWORD=${{ secrets.GITHUB_TOKEN }}
           #
-          ./mvnw help:evaluate -Dexpression=project.version -Doutput=VERSION
-          ./mvnw help:evaluate -Dexpression=project.artifacId -Doutput=APP_NAME
-          echo "v$(cat VERSION | cut -d'-' -f1)" > VERSION
-          export VERSION=$(cat VERSION)
-          ./mvnw versions:set -DnewVersion=${VERSION}
+          ./mvnw versions:set -DnewVersion=${{ steps.tag_bump_version.outputs.new_tag }}
           ./mvnw clean deploy -s .mvn/settings.xml
-      - name: check env
-        run: |
-          ls -la
-          set
