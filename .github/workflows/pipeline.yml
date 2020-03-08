@@ -26,6 +26,17 @@ jobs:
         run: |
           ls -la
           set
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.17.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DEFAULT_BUMP: patch
+          DRY_RUN: true
+      - name: check env
+        run: |
+          ls -la
+          set
       - name: Build & Test Groovy (branch)
         if: github.ref != 'refs/heads/master'
         run: |
@@ -44,17 +55,6 @@ jobs:
           export VERSION=$(cat VERSION)
           ./mvnw versions:set -DnewVersion=${VERSION}
           ./mvnw clean deploy -s .mvn/settings.xml
-      - name: check env
-        run: |
-          ls -la
-          set
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.17.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          DEFAULT_BUMP: patch
-          DRY_RUN: true
       - name: check env
         run: |
           ls -la
