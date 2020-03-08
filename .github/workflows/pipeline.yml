@@ -18,41 +18,24 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11.x'
-      - name: define variable
+      - name: prepare
         run: |
           echo '.m2/repository' > MAVEN_REPOSITORY
           chmod 777 mvnw
-      - name: check env
-        run: |
-          ls -la
-          set
       - id: tag_bump_version
         name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.17.2
+        if: github.ref == 'refs/heads/master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           DEFAULT_BUMP: patch
           DRY_RUN: true
       - name: check before step
+        if: github.ref == 'refs/heads/master'
         run: |
           echo 'output tagging step: '
           echo ${{ steps.tag_bump_version.outputs.new_tag }}
-      - id: gh_release
-        name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: RELEASE.md
-          draft: false
-          prerelease: false
-          name: ${{ steps.tag_bump_version.outputs.new_tag }}
-          tag_name: ${{ steps.tag_bump_version.outputs.new_tag }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: check gh release output
-        run: |
-          echo 'output gh release step: '
-          echo ${{ steps.tag_bump_version.outputs.url }}
       - name: Build & Test Groovy (branch)
         if: github.ref != 'refs/heads/master'
         run: |
@@ -67,3 +50,20 @@ jobs:
           #
           ./mvnw versions:set -DnewVersion=${{ steps.tag_bump_version.outputs.new_tag }}
           ./mvnw clean deploy -s .mvn/settings.xml
+      - id: gh_release
+        name: Release
+        uses: softprops/action-gh-release@v1
+        if: github.ref == 'refs/heads/master'
+        with:
+          body_path: RELEASE.md
+          draft: false
+          prerelease: false
+          name: ${{ steps.tag_bump_version.outputs.new_tag }}
+          tag_name: ${{ steps.tag_bump_version.outputs.new_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: check gh release output
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo 'output gh release step: '
+          echo ${{ steps.gh_release.outputs.url }}
