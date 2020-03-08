@@ -1,6 +1,6 @@
-# 📦 Jenkins Core Updates
+# 📦 Core Updates
 
-# 🚀 New features and improvements
+# 🚀 New features 
 
 # 📝 Documentation updates
 
