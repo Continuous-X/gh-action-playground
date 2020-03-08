@@ -48,10 +48,8 @@ jobs:
         run: |
           ls -la
           set
-      - name: new gh release (master)
-        uses: softprops/action-gh-release@v1
-        if: github.ref == 'refs/heads/master'
-        with:
-          body_path: CHANGELOG.md
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.17.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
