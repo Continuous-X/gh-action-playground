@@ -37,6 +37,7 @@ jobs:
         run: |
           ls -la
           set
+          echo ${{ env.new_tag }}
       - name: Build & Test Groovy (branch)
         if: github.ref != 'refs/heads/master'
         run: |
