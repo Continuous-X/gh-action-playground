@@ -24,7 +24,7 @@ jobs:
           chmod 777 mvnw
       - id: tag_bump_version
         name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.17.2
+        uses: anothrNick/github-tag-action@latest
         if: github.ref == 'refs/heads/master'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
