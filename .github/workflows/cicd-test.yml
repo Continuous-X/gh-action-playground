@@ -11,9 +11,9 @@ jobs:
         id: extract_branch_name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
-      #- uses: actions/setup-node@v3
-      #  with:
-      #    node-version: 19
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 19
       - name: Semantic Release
         id: get-next-version
         uses: cycjimmy/semantic-release-action@v3
