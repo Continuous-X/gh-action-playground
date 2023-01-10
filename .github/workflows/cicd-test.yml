@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 19
       - name: Install dependencies
-        run: npm install
+        run: npm init -y
       - name: Semantic Release
         id: get-next-version
         uses: cycjimmy/semantic-release-action@v3
