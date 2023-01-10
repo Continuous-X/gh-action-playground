@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Branch name
+        run: echo running on branch ${GITHUB_REF##*/}
       #- uses: actions/setup-node@v3
       #  with:
       #    node-version: 19
@@ -19,7 +21,7 @@ jobs:
           # you can set branch for semantic-release older than v16.
           branches: |
             [
-              '${{ env.GITHUB_HEAD_REF }}'
+              '${{ env.GITHUB_REF }}'
             ]
           # You can specify specifying version range for the extra plugins if you prefer.
           #extra_plugins: |
