@@ -21,7 +21,7 @@ jobs:
           # you can set branch for semantic-release older than v16.
           branches: |
             [
-              '${{ env.GITHUB_REF }}'
+              '${GITHUB_REF##*/}'
             ]
           # You can specify specifying version range for the extra plugins if you prefer.
           #extra_plugins: |
