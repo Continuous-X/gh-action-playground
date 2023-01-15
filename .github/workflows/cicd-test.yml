@@ -71,14 +71,17 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: "setup node"
+        uses: actions/setup-node@v3
         with:
           node-version: 19
-      - name: Semantic Release
+      - name: "init npm"
+        run: npm init -y
+      - name: "semantic release - create new release"
         uses: cycjimmy/semantic-release-action@v3
         with:
-          dry_run: true
-          semantic_version: 20.0.2
+          dry_run: false
+          #semantic_version: 20.0.2
           # you can set branch for semantic-release older than v16.
           # branches:
           # You can specify specifying version range for the extra plugins if you prefer.
