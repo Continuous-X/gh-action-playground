@@ -31,7 +31,8 @@ jobs:
               '${{ steps.extract_branch_name.outputs.branch }}'
             ]
         env:
-          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_GITHUB_TOKEN }}
+          #GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: "check outputs and env"
         run: |
@@ -85,5 +86,6 @@ jobs:
           #semantic_version: 20.0.2
           # you can set branch for semantic-release older than v16.
         env:
-          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_GITHUB_TOKEN }}
+          #GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
